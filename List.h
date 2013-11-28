@@ -21,14 +21,25 @@ class List
   private:
     ListNode<NODETYPE> *firstPtr;
     ListNode<NODETYPE> *lastPtr;
+    ListNode<NODETYPE> *cursorPtr;
     ListNode<NODETYPE> *getNewNode(const NODETYPE &);
 };
 
 template<typename NODETYPE>
 List<NODETYPE>::List()
-  : firstPtr(0), lastPtr(0)
+  : firstPtr(0), lastPtr(0), cursorPtr(0)
 {
 
+}
+
+template<typename NODETYPE>
+List<NODETYPE>::~List()
+{
+  while (firstPtr != lastPtr) {
+    cursorPtr = firstPtr;  
+    firstPtr = firstPtr->nextPtr;
+    delete cursorPtr;
+  }
 }
 
 template<typename NODETYPE>
@@ -41,6 +52,7 @@ void List<NODETYPE>::insertAtFront(const NODETYPE &value)
   } else {
     newPtr->nextPtr = firstPtr;
     firstPtr = newPtr;
+    firstPtr->nextPtr->prevPtr = firstPtr;   
   }
 }
 
@@ -53,9 +65,10 @@ bool List<NODETYPE>::removeFromFront()
     ListNode<NODETYPE> *tempPtr = firstPtr;
 
     if (firstPtr == lastPtr) {
-      firstPtr = lastPtr = 0;
+      firstPtr = lastPtr = NULL;
     } else {
       firstPtr = firstPtr->nextPtr; 
+      firstPtr->prevPtr = NULL;
     }
 
     delete tempPtr;
